@@ -6,22 +6,18 @@
   "scripts": {
     "start": "electron .",
     "rebuild": "electron-rebuild",
-    "pack": "electron-packager . deeplhack --platform=darwin --arch=x64"
+    "pack": "electron-packager . deeplhack --platform=win32 --arch=x64",
+    "pack_all": "electron-packager . deeplhack --ignore=node_modules --all"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/kouml/DeepLHack/",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "DeepL",
+    "DeepLHack"
   ],
   "author": "kouml",
   "license": "MIT",
   "dependencies": {
-    "electron": "^9.0.0",
-    "node-key-sender": "^1.0.11",
-    "robotjs": "^0.6.0"
+    "electron": "^9.0.0"
   },
   "devDependencies": {
     "electron-packager": "^15.0.0",

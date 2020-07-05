@@ -1,13 +1,13 @@
 {
   "name": "DeepLHack",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This app is able to use DeepL from paper/thesis without modifying",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "rebuild": "electron-rebuild",
     "pack": "electron-packager . deeplhack --platform=win32 --arch=x64",
-    "pack_all": "electron-packager . deeplhack --ignore=node_modules --all"
+    "pack_all": "electron-packager ./deeplhack deeplhack --ignore=node_modules --all --overwrite --out=dist"
   },
   "repository": "https://github.com/kouml/DeepLHack/",
   "keywords": [

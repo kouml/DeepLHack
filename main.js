@@ -31,7 +31,6 @@ app.whenReady().then(() => {
       title: 'DeepLHacked',
       body: 'remove redundant spaces from clipboard'
     })
-
     myNotification.show();
     clipboard.writeText(str, 'selection');
   })
@@ -42,6 +41,6 @@ app.whenReady().then(() => {
 })
 
 app.on('will-quit', () => {
-  globalShortcut.unregister(cmd)
-  globalShortcut.unregisterAll()
+  globalShortcut.unregister(cmd);
+  globalShortcut.unregisterAll();
 })

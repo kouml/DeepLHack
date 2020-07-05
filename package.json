@@ -7,7 +7,7 @@
     "start": "electron .",
     "rebuild": "electron-rebuild",
     "pack": "electron-packager . deeplhack --platform=win32 --arch=x64",
-    "pack_all": "electron-packager ./deeplhack deeplhack --ignore=node_modules --all --overwrite --out=dist"
+    "pack_all": "electron-packager . deeplhack --ignore=node_modules --all --overwrite --out=dist"
   },
   "repository": "https://github.com/kouml/DeepLHack/",
   "keywords": [
@@ -20,7 +20,7 @@
     "electron": "^9.0.0"
   },
   "devDependencies": {
-    "electron-packager": "^15.0.0",
+    "electron-packager": "^14.0.0",
     "electron-rebuild": "^1.11.0"
   }
 }

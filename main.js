@@ -2,18 +2,19 @@ const {
   app,
   dialog,
   globalShortcut,
-  clipboard
+  clipboard,
+  Notification
 } = require('electron')
 
 const pkg = require('./package.json');
 const cmd = 'CommandOrControl+shift+V';
 
 app.whenReady().then(() => {
-  const ret = globalShortcut.register(cmd, () => {
-    let str = clipboard.readText();
-    str = str.replace(/\s/g, ' ');
-    clipboard.writeText(str, 'selection');
-  })
+  //二重起動の防止
+  const doubleboot = app.requestSingleInstanceLock();
+  if (!doubleboot) {
+    app.quit();
+  }
 
   const options = {
     type: 'error',
@@ -21,6 +22,19 @@ app.whenReady().then(() => {
     message: 'Registration is failed',
     detail: 'It may conflict with other keyboard shortcut key.'
   };
+
+  const ret = globalShortcut.register(cmd, () => {
+    let str = clipboard.readText();
+    str = str.replace(/\s/g, ' ');
+    // https: //github.com/electron/electron/issues/10864
+    var myNotification = new Notification({
+      title: 'DeepLHacked',
+      body: 'remove redundant spaces from clipboard'
+    })
+
+    myNotification.show();
+    clipboard.writeText(str, 'selection');
+  })
 
   if (!ret) {
     const response = dialog.showMessageBox(options);

@@ -15,7 +15,6 @@ let toggled = true;
 
 app.whenReady().then(() => {
   const ret = globalShortcut.register(cmd, () => {
-    // console.log("ok");
     let str = clipboard.readText();
     str = str.replace(/\s/g, ' ');
     // https: //github.com/electron/electron/issues/10864
@@ -28,8 +27,10 @@ app.whenReady().then(() => {
   });
 
 
-  // appIcon = new Tray('23252616.jpeg');
-  appIcon = new Tray('icon/com_93620.png');
+  appIcon = new Tray('23252616.jpeg');
+  // appIcon = new Tray('icon/com_93620.png');
+  // add icon: https://qiita.com/saki-engineering/items/203892838e15b3dbd300
+  appIcon = new Tray();
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Toggle',
       type: 'checkbox',

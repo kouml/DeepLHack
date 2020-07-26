@@ -17,6 +17,7 @@ var exec = require('child_process').exec;
 var launch = 'launch.scpt';
 
 const cmd = 'CommandOrControl+shift+V';
+var is_notify = true;
 let appIcon = null;
 let toggled = true;
 
@@ -41,16 +42,19 @@ const err3 = {
   detail: 'It may already launched.'
 };
 
+
 app.whenReady().then(() => {
+  var myNotification = new Notification({
+    title: 'DeepLHack',
+    body: 'Paste to DeepL'
+  })
   const ret = globalShortcut.register(cmd, () => {
     let str = clipboard.readText();
     str = str.replace(/\s/g, ' ');
     // https: //github.com/electron/electron/issues/10864
-    var myNotification = new Notification({
-      title: 'DeepLHacked',
-      body: 'remove redundant spaces from clipboard'
-    })
-    myNotification.show();
+    if (is_notify){
+      myNotification.show();
+    }
     clipboard.writeText(str, 'selection');
     exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
       if (err != null) {
@@ -62,7 +66,7 @@ app.whenReady().then(() => {
   appIcon = new Tray('assets/icon-16.png');
   // add icon: https://qiita.com/saki-engineering/items/203892838e15b3dbd300
   const contextMenu = Menu.buildFromTemplate([{
-      label: 'Toggle',
+      label: 'Turn on/off',
       type: 'checkbox',
       click() {
         if (toggled) {
@@ -74,11 +78,9 @@ app.whenReady().then(() => {
             let str = clipboard.readText();
             str = str.replace(/\s/g, ' ');
             // https: //github.com/electron/electron/issues/10864
-            var myNotification = new Notification({
-              title: 'DeepLHacked',
-              body: 'remove redundant spaces from clipboard'
-            })
-            myNotification.show();
+            if (is_notify) {
+              myNotification.show();
+            }
             clipboard.writeText(str, 'selection');
             exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
               if (err != null) {
@@ -87,6 +89,17 @@ app.whenReady().then(() => {
             });
           });
           ret;
+        }
+      }
+    },
+    {
+      label: 'Notification',
+      type: 'checkbox',
+      click() {
+        if (is_notify == true){
+          is_notify = false;
+        } else {
+          is_notify = true;
         }
       }
     },
@@ -100,6 +113,7 @@ app.whenReady().then(() => {
   ]);
 
   contextMenu.items[0].checked = true;
+  contextMenu.items[1].checked = true;
   appIcon.setContextMenu(contextMenu);
 
   // prevent from double exectuion

@@ -9,6 +9,15 @@ const {
 } = require('electron')
 
 const pkg = require('./package.json');
+var exec = require('child_process').exec;
+// var epath = require('electron-path');
+// var unpackedPath = epath.getUnpackedPath();
+// var launch = unpackedPath + 'launch.scpt';
+var launch = 'launch.scpt';
+
+// var el = document.getElementById('launch');
+
+
 const cmd = 'CommandOrControl+shift+V';
 let appIcon = null;
 let toggled = true;
@@ -28,9 +37,9 @@ app.whenReady().then(() => {
 
 
   appIcon = new Tray('23252616.jpeg');
-  // appIcon = new Tray('icon/com_93620.png');
+  // appIcon = new Tray('com_93620.png');
   // add icon: https://qiita.com/saki-engineering/items/203892838e15b3dbd300
-  appIcon = new Tray();
+  // appIcon = new Tray();
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Toggle',
       type: 'checkbox',
@@ -51,6 +60,9 @@ app.whenReady().then(() => {
             })
             myNotification.show();
             clipboard.writeText(str, 'selection');
+            exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
+              // alert(err);
+            });
           });
           ret;
         }
@@ -60,7 +72,7 @@ app.whenReady().then(() => {
       label: 'Quit',
       type: 'normal',
       click() {
-        app.quit()
+        app.quit();
       }
     }
   ]);

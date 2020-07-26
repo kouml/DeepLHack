@@ -1,5 +1,5 @@
 # Simple auto formatting tool for DeepL Translator: DeepLHack
-![guenv demo](demo.gif)
+![DeepLHack demo](assets/logo_large.png)
 This tool can fix this type of paste problem.
 DeepLHack is the simplest auto-formatting tool to use DeepL Translator.
 

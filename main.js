@@ -1,4 +1,5 @@
 const {
+  os,
   app,
   dialog,
   globalShortcut,
@@ -10,6 +11,26 @@ const {
 
 const pkg = require('./package.json');
 var exec = require('child_process').exec;
+
+const platforms = {
+  WINDOWS: 'WINDOWS',
+  MAC: 'MAC',
+  LINUX: 'LINUX',
+  SUN: 'SUN',
+  OPENBSD: 'OPENBSD',
+  ANDROID: 'ANDROID',
+  AIX: 'AIX',
+};
+
+const platformsNames = {
+  win32: platforms.WINDOWS,
+  darwin: platforms.MAC,
+  linux: platforms.LINUX,
+  sunos: platforms.SUN,
+  openbsd: platforms.OPENBSD,
+  android: platforms.ANDROID,
+  aix: platforms.AIX,
+};
 
 // var epath = require('electron-path');
 // var unpackedPath = epath.getUnpackedPath();
@@ -44,6 +65,9 @@ const err3 = {
 
 
 app.whenReady().then(() => {
+  // console.log(os.platform());
+  // const currentPlatform = platformsNames[os.platform()];
+  // console.log(currentPlatform);
   var myNotification = new Notification({
     title: 'DeepLHack',
     body: 'Paste to DeepL'

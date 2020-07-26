@@ -1,6 +1,6 @@
 {
   "name": "DeepLHack",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "This app is able to use DeepL from paper/thesis without modifying",
   "main": "main.js",
   "scripts": {

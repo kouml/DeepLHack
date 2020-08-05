@@ -1,5 +1,4 @@
 const {
-  os,
   app,
   dialog,
   globalShortcut,
@@ -9,8 +8,93 @@ const {
   Notification,
 } = require('electron');
 
+const os = require('os');
 const pkg = require('./package.json');
 var exec = require('child_process').exec;
+
+// const { K, U } = require('win32-api');
+// const user32 = U.load()  // load all apis defined in lib/{dll}/api from user32.dll
+
+
+// const title = 'DeepL\0'    // null-terminated string
+// // const lpszWindow = Buffer.from(title, 'ucs2');
+// const lpszWindow = Buffer.from(title);
+// const hWnd = user32.FindWindowExW(0, 0, lpszWindow, null);
+// console.log(hWnd);
+var child = require('child_process').execFile;
+
+var user_name = os.userInfo().username;
+var executablePath = "C:\\Users\\" + user_name + "\\AppData\\Local\\DeepL\\DeepL.exe";
+// console.log(executablePath);
+const clipboardy = require('clipboardy');
+// clipboardy.writeSync('copy shimasita');
+var ncp = require("copy-paste");
+
+// ncp.copy("hello") // Asynchronously adds "hello" to clipbroad
+// ncp.paste() // Synchronously returns clipboard contents
+
+// tell application "System Events" to keystroke "a" using command down
+// tell application "System Events" to keystroke "v" using command down
+
+
+
+
+
+
+// const title = 'DeepL\0'    // null-terminated string
+
+// // const title = '计算器\0'    // null-terminated string 字符串必须以\0即null结尾!
+// const title = 'Google Chrome\0';
+// const lpszWindow = Buffer.from(title, 'ucs2');
+// const hWnd = user32.FindWindowExW(0, 0, lpszWindow, null);
+// // const launch_ps1 = "launch.ps1";
+
+// var spawn = require("child_process").spawn, child;
+// child.stdout.on("data", function (data) {
+//   console.log("Powershell Data: " + data);
+// });
+// // child.stderr.on("data", function (data) {
+// //   console.log("Powershell Errors: " + data);
+// // });
+// child.on("exit", function () {
+//   console.log("Powershell Script finished");
+// });
+// child.stdin.end(); //end input
+
+
+
+
+// exec('./' + launch_ps1, {}, function (err, stdout, stderr) {
+//   if (err != null) {
+//     console.log("a");
+//     // const response = dialog.showMessageBox(err2);
+//   }
+// });
+
+// const hWnd = user32.FindWindow( null, lpszWindow);
+// var process = user32.FindWindow(NULL,"Calculadora")
+// var process = user32.FindWindowExW(null, null, lpszWindow, title);
+// console.log(hWnd);
+// console.log(hWnd);
+// console.log(lpszWindow);
+
+// if (typeof hWnd === 'number' && hWnd > 0
+//   || typeof hWnd === 'bigint' && hWnd > 0
+//   || typeof hWnd === 'string' && hWnd.length > 0
+// ) {
+//   console.log('buf: ', hWnd)
+
+//   // Change title of the Calculator
+//   // const res = user32.SetWindowTextW(hWnd, Buffer.from('Node-Calculator\0', 'ucs2'))
+
+//   // if (!res) {
+//   //   console.log('SetWindowTextW failed')
+//   // }
+//   // else {
+//   //   console.log('window title changed')
+//   // }
+// }
+
 
 const platforms = {
   WINDOWS: 'WINDOWS',
@@ -63,11 +147,8 @@ const err3 = {
   detail: 'It may already launched.'
 };
 
-
 app.whenReady().then(() => {
-  // console.log(os.platform());
-  // const currentPlatform = platformsNames[os.platform()];
-  // console.log(currentPlatform);
+  const currentPlatform = platformsNames[os.platform()];
   var myNotification = new Notification({
     title: 'DeepLHack',
     body: 'Paste to DeepL'
@@ -80,15 +161,26 @@ app.whenReady().then(() => {
       myNotification.show();
     }
     clipboard.writeText(str, 'selection');
-    exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
-      if (err != null) {
-        const response = dialog.showMessageBox(err2);
-      }
-    });
+    if (currentPlatform == 'MAC'){
+      exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
+        if (err != null) {
+          const response = dialog.showMessageBox(err2);
+        }
+      });
+    } else if(currentPlatform == 'WINDOWS'){
+      console.log("this is windows");
+      child(executablePath, function (err, data) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        clipboardy.readSync()
+      });
+    }
   });
 
+  // icon: https://qiita.com/saki-engineering/items/203892838e15b3dbd300
   appIcon = new Tray('assets/icon-16.png');
-  // add icon: https://qiita.com/saki-engineering/items/203892838e15b3dbd300
   const contextMenu = Menu.buildFromTemplate([{
       label: 'Turn on/off',
       type: 'checkbox',
@@ -106,11 +198,22 @@ app.whenReady().then(() => {
               myNotification.show();
             }
             clipboard.writeText(str, 'selection');
-            exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
-              if (err != null) {
-                dialog.showErrorBox('error occur', err);
-              }
-            });
+            if (currentPlatform == 'MAC') {
+              exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
+                if (err != null) {
+                  const response = dialog.showMessageBox(err2);
+                }
+              });
+            } else if (currentPlatform == 'WINDOWS') {
+              console.log("this is windows");
+              child(executablePath, function (err, data) {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+                clipboardy.readSync()
+              });
+            }
           });
           ret;
         }

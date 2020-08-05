@@ -12,9 +12,25 @@ const os = require('os');
 const pkg = require('./package.json');
 var exec = require('child_process').exec;
 
+// const sendkeys = require('sendkeys-js')
+
+// for mac
+// sendkeys.send('f5')
+
+// for win
+// sendkeys.send('{Ctrl+C}')
+var robot = require("robotjs");
+
+// Type user's password or something.
+// robot.typeString("abc123");
+
+
+
+
+
+
 // const { K, U } = require('win32-api');
 // const user32 = U.load()  // load all apis defined in lib/{dll}/api from user32.dll
-
 
 // const title = 'DeepL\0'    // null-terminated string
 // // const lpszWindow = Buffer.from(title, 'ucs2');
@@ -25,11 +41,13 @@ var child = require('child_process').execFile;
 
 var user_name = os.userInfo().username;
 var executablePath = "C:\\Users\\" + user_name + "\\AppData\\Local\\DeepL\\DeepL.exe";
+var pastePath = ".\\node_modules\\clipboardy\\fallbacks\\windows\\clipboard_x86_64.exe";
+var args = ["--paste"];
+
 // console.log(executablePath);
 const clipboardy = require('clipboardy');
 // clipboardy.writeSync('copy shimasita');
-var ncp = require("copy-paste");
-
+// var ncp = require("copy-paste");
 // ncp.copy("hello") // Asynchronously adds "hello" to clipbroad
 // ncp.paste() // Synchronously returns clipboard contents
 
@@ -174,8 +192,23 @@ app.whenReady().then(() => {
           console.error(err);
           return;
         }
-        clipboardy.readSync()
+        // clipboardy.readSync();
+        // robot.typeString(str);
+        robot.keyTap('v', 'control');
+        // robot.keyToggle('control', 'down');
+        // robot.keyTap('v');
+
+        console.log("paste 1");
       });
+      // paste
+      // child(pastePath, args, function (err, data) {
+      //   if (err) {
+      //     console.error(err);
+      //     return;
+      //   }
+      // });
+      // clipboardy.readSync();
+      console.log("paste 2");
     }
   });
 
@@ -211,8 +244,11 @@ app.whenReady().then(() => {
                   console.error(err);
                   return;
                 }
-                clipboardy.readSync()
+                clipboardy.readSync();
+                console.log("paste 1");
               });
+              clipboardy.readSync();
+              console.log("paste 2");
             }
           });
           ret;

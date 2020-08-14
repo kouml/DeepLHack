@@ -10,109 +10,16 @@ const {
 
 const os = require('os');
 const pkg = require('./package.json');
-var exec = require('child_process').exec;
 
-// const sendkeys = require('sendkeys-js')
-
-// for mac
-// sendkeys.send('f5')
-
-// for win
-// sendkeys.send('{Ctrl+C}')
 var robot = require("robotjs");
-
-// Type user's password or something.
-// robot.typeString("abc123");
-
-
-
-
-
-
-// const { K, U } = require('win32-api');
-// const user32 = U.load()  // load all apis defined in lib/{dll}/api from user32.dll
-
-// const title = 'DeepL\0'    // null-terminated string
-// // const lpszWindow = Buffer.from(title, 'ucs2');
-// const lpszWindow = Buffer.from(title);
-// const hWnd = user32.FindWindowExW(0, 0, lpszWindow, null);
-// console.log(hWnd);
+var exec = require('child_process').exec;
 var child = require('child_process').execFile;
 
+// Default executablePath
+// TODO: fix more flexible
 var user_name = os.userInfo().username;
 var executablePath = "C:\\Users\\" + user_name + "\\AppData\\Local\\DeepL\\DeepL.exe";
-var pastePath = ".\\node_modules\\clipboardy\\fallbacks\\windows\\clipboard_x86_64.exe";
-var args = ["--paste"];
-
-// console.log(executablePath);
-const clipboardy = require('clipboardy');
-// clipboardy.writeSync('copy shimasita');
-// var ncp = require("copy-paste");
-// ncp.copy("hello") // Asynchronously adds "hello" to clipbroad
-// ncp.paste() // Synchronously returns clipboard contents
-
-// tell application "System Events" to keystroke "a" using command down
-// tell application "System Events" to keystroke "v" using command down
-
-
-
-
-
-
-// const title = 'DeepL\0'    // null-terminated string
-
-// // const title = '计算器\0'    // null-terminated string 字符串必须以\0即null结尾!
-// const title = 'Google Chrome\0';
-// const lpszWindow = Buffer.from(title, 'ucs2');
-// const hWnd = user32.FindWindowExW(0, 0, lpszWindow, null);
-// // const launch_ps1 = "launch.ps1";
-
-// var spawn = require("child_process").spawn, child;
-// child.stdout.on("data", function (data) {
-//   console.log("Powershell Data: " + data);
-// });
-// // child.stderr.on("data", function (data) {
-// //   console.log("Powershell Errors: " + data);
-// // });
-// child.on("exit", function () {
-//   console.log("Powershell Script finished");
-// });
-// child.stdin.end(); //end input
-
-
-
-
-// exec('./' + launch_ps1, {}, function (err, stdout, stderr) {
-//   if (err != null) {
-//     console.log("a");
-//     // const response = dialog.showMessageBox(err2);
-//   }
-// });
-
-// const hWnd = user32.FindWindow( null, lpszWindow);
-// var process = user32.FindWindow(NULL,"Calculadora")
-// var process = user32.FindWindowExW(null, null, lpszWindow, title);
-// console.log(hWnd);
-// console.log(hWnd);
-// console.log(lpszWindow);
-
-// if (typeof hWnd === 'number' && hWnd > 0
-//   || typeof hWnd === 'bigint' && hWnd > 0
-//   || typeof hWnd === 'string' && hWnd.length > 0
-// ) {
-//   console.log('buf: ', hWnd)
-
-//   // Change title of the Calculator
-//   // const res = user32.SetWindowTextW(hWnd, Buffer.from('Node-Calculator\0', 'ucs2'))
-
-//   // if (!res) {
-//   //   console.log('SetWindowTextW failed')
-//   // }
-//   // else {
-//   //   console.log('window title changed')
-//   // }
-// }
-
+console.log(executablePath);
 
 const platforms = {
   WINDOWS: 'WINDOWS',
@@ -134,16 +41,14 @@ const platformsNames = {
   aix: platforms.AIX,
 };
 
-// var epath = require('electron-path');
-// var unpackedPath = epath.getUnpackedPath();
-// var launch = unpackedPath + 'launch.scpt';
-var launch = 'launch.scpt';
-
+const launch = 'launch.scpt';
 const cmd = 'CommandOrControl+shift+V';
+
 var is_notify = true;
 let appIcon = null;
 let toggled = true;
 
+// err messages
 const err1 = {
   type: 'error',
   title: 'Alert',
@@ -155,7 +60,7 @@ const err2 = {
   type: 'error',
   title: 'Alert',
   message: 'applescript is not executed',
-  detail: 'It may not possible to use /usr/bin_osascript.'
+  detail: 'It may not possible to use /usr/bin_osascript or DeepL is not installed.'
 };
 
 const err3 = {
@@ -165,97 +70,86 @@ const err3 = {
   detail: 'It may already launched.'
 };
 
+
+const err4 = {
+  type: 'error',
+  title: 'Alert',
+  message: 'DeepLApplication is not exist in your local.',
+  detail: `Please confirm your application is installed at ${executablePath}`
+};
+
 app.whenReady().then(() => {
   const currentPlatform = platformsNames[os.platform()];
+
   var myNotification = new Notification({
     title: 'DeepLHack',
     body: 'Paste to DeepL'
   })
+
+
+  function macLaunchScript(){
+    exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
+      if (err != null) {
+        const response = dialog.showMessageBox(err2);
+      }
+      if (is_notify) {
+        myNotification.show();
+      }
+    });
+  };
+
+  function winLaunchScript() {
+    console.log("this is windows");
+    child(executablePath, function (err, data) {
+      if (err) {
+        const response = dialog.showMessageBox(err4);
+        console.error(err);
+        return;
+      }
+      if (is_notify) {
+        myNotification.show();
+      }
+      robot.keyTap('v', 'control');
+    });
+  };
+
   const ret = globalShortcut.register(cmd, () => {
     let str = clipboard.readText();
     str = str.replace(/\s/g, ' ');
     // https: //github.com/electron/electron/issues/10864
-    if (is_notify){
-      myNotification.show();
-    }
     clipboard.writeText(str, 'selection');
     if (currentPlatform == 'MAC'){
-      exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
-        if (err != null) {
-          const response = dialog.showMessageBox(err2);
-        }
-      });
+      macLaunchScript();
     } else if(currentPlatform == 'WINDOWS'){
-      console.log("this is windows");
-      child(executablePath, function (err, data) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        // clipboardy.readSync();
-        // robot.typeString(str);
-        robot.keyTap('v', 'control');
-        // robot.keyToggle('control', 'down');
-        // robot.keyTap('v');
-
-        console.log("paste 1");
-      });
-      // paste
-      // child(pastePath, args, function (err, data) {
-      //   if (err) {
-      //     console.error(err);
-      //     return;
-      //   }
-      // });
-      // clipboardy.readSync();
-      console.log("paste 2");
+      winLaunchScript();
     }
   });
 
   // icon: https://qiita.com/saki-engineering/items/203892838e15b3dbd300
   appIcon = new Tray('assets/icon-16.png');
   const contextMenu = Menu.buildFromTemplate([{
-      label: 'Turn on/off',
-      type: 'checkbox',
-      click() {
-        if (toggled) {
-          globalShortcut.unregisterAll();
-          toggled = false;
-        } else {
-          // console.log("ret");
-          const ret = globalShortcut.register(cmd, () => {
-            let str = clipboard.readText();
-            str = str.replace(/\s/g, ' ');
-            // https: //github.com/electron/electron/issues/10864
-            if (is_notify) {
-              myNotification.show();
-            }
-            clipboard.writeText(str, 'selection');
-            if (currentPlatform == 'MAC') {
-              exec('/usr/bin/osascript ' + launch, {}, function (err, stdout, stderr) {
-                if (err != null) {
-                  const response = dialog.showMessageBox(err2);
-                }
-              });
-            } else if (currentPlatform == 'WINDOWS') {
-              console.log("this is windows");
-              child(executablePath, function (err, data) {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-                clipboardy.readSync();
-                console.log("paste 1");
-              });
-              clipboardy.readSync();
-              console.log("paste 2");
-            }
-          });
-          ret;
+        label: 'Turn on/off',
+        type: 'checkbox',
+        click() {
+          if (toggled) {
+            globalShortcut.unregisterAll();
+            toggled = false;
+          } else {
+            const ret = globalShortcut.register(cmd, () => {
+              let str = clipboard.readText();
+              str = str.replace(/\s/g, ' ');
+              // https: //github.com/electron/electron/issues/10864
+              clipboard.writeText(str, 'selection');
+              if (currentPlatform == 'MAC') {
+                macLaunchScript();
+              } else if (currentPlatform == 'WINDOWS') {
+                winLaunchScript();
+              }
+            });
+          };
         }
-      }
-    },
-    {
+      },
+      {
       label: 'Notification',
       type: 'checkbox',
       click() {

@@ -106,9 +106,6 @@ app.whenReady().then(() => {
         console.error(err);
         return;
       }
-      if (is_notify) {
-        myNotification.show();
-      }
       robot.keyTap('v', 'control');
     });
   };
@@ -122,6 +119,9 @@ app.whenReady().then(() => {
       macLaunchScript();
     } else if(currentPlatform == 'WINDOWS'){
       winLaunchScript();
+    }
+    if (is_notify) {
+      myNotification.show();
     }
   });
 
@@ -144,6 +144,9 @@ app.whenReady().then(() => {
                 macLaunchScript();
               } else if (currentPlatform == 'WINDOWS') {
                 winLaunchScript();
+              }
+              if (is_notify) {
+                myNotification.show();
               }
             });
           };

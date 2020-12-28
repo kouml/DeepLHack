@@ -12,12 +12,16 @@ DeepLHack is the simplest auto-formatting tool to use DeepL Translator.
 The main function of this tools is just **remove redundant spaces from clipboard and paste to DeepL.**
 
 ## Example
-When you want to translate sentences/paragraph from paper, Just copy and paste with Cmd+Shift+V(For windows, Ctrl+Shift+V) instead of Cmd+C, Cmd+C(Original default DeepL keybind).
+When you want to translate sentences/paragraph from paper, Just copy and paste with **Cmd+Shift+V**(For windows, Ctrl+Shift+V) instead of Cmd+C, Cmd+C(Original default DeepL keybind).
 
 ![paper](assets/before.png)
 
 Above translation was invoked with DeepL original keybind, Below translation was invoked with DeepLHack.
-![paper](assets/comparison.png)
+
+### Paste results
+![paper](assets/comparison_source.png)
+### Transolation results
+![paper](assets/comparison_target.png)
 
 
 # Installation
@@ -29,8 +33,3 @@ download latest tools from [release pages](https://github.com/kouml/DeepLHack/re
 
 ## For Linux
 download latest tools from [release pages](https://github.com/kouml/DeepLHack/releases)
-
-# Usage
-
-## Cmd(Ctrl)+Shift+V
-

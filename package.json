@@ -3,11 +3,37 @@
   "version": "0.0.3",
   "description": "This app is able to use DeepL from paper/thesis without modifying",
   "main": "main.js",
+  "build": {
+    "appId": "com.electron.deeplhack",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "node_modules/**/*",
+      {
+        "from": "src",
+        "to": "build",
+        "filter": "**/*"
+      }
+    ],
+    "mac": {
+      "icon": "assets/mac/deeplhack.icns",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "icon": "assets/win/deeplhack.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false
+    }
+  },
   "scripts": {
     "start": "electron .",
-    "rebuild": "electron-rebuild",
-    "pack": "electron-packager . deeplhack --platform=win32 --arch=x64",
-    "pack_all": "electron-packager . deeplhack --ignore=node_modules --all --overwrite --out=dist"
+    "rebuild": "electron-rebuild"
   },
   "repository": "https://github.com/kouml/DeepLHack/",
   "keywords": [
@@ -21,7 +47,8 @@
     "robotjs": "^0.6.0"
   },
   "devDependencies": {
-    "electron-packager": "^14.0.0",
+    "electron": "^9.0.0",
+    "electron-builder": "^22.8.0",
     "electron-rebuild": "^1.11.0"
   }
 }

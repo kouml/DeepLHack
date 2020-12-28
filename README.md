@@ -17,7 +17,7 @@ When you want to translate sentences/paragraph from paper, Just copy and paste w
 ![paper](assets/before.png)
 
 Above translation was invoked with DeepL original keybind, Below translation was invoked with DeepLHack.
-<img src="assets/comparison.png" width=100% height=500 alt="comparison">
+![paper](assets/comparison.png)
 
 
 # Installation
